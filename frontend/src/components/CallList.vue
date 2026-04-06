@@ -2,6 +2,7 @@
 import { ref, onMounted, watch } from "vue";
 import { fetchCalls, type CallSummary } from "../api";
 import CallCard from "./CallCard.vue";
+import CallFilters from "./CallFilters.vue";
 
 defineProps<{
   selectedId: number | null;
@@ -21,11 +22,12 @@ const page = ref(1);
 
 async function load() {
   loading.value = true;
+  // Only include params that have values
   const params: Record<string, string> = { page: page.value.toString() };
   if (search.value) params.search = search.value;
   if (urgentFilter.value) params.urgent = urgentFilter.value;
   if (callerTypeFilter.value) params.caller_type = callerTypeFilter.value;
-  
+
   const res = await fetchCalls(params);
   calls.value = res.results;
   count.value = res.count;
@@ -33,46 +35,22 @@ async function load() {
 }
 
 onMounted(load);
+
+// Re-fetch from page 1 whenever filters change
 watch([search, urgentFilter, callerTypeFilter], () => {
   page.value = 1;
   load();
 });
-
 </script>
 
 <template>
   <div>
     <!-- Toolbar -->
-    <div class="flex items-center gap-3 mb-4 flex-wrap">
-      <div class="relative flex-1 min-w-[200px]">
-        <font-awesome-icon
-          icon="phone"
-          class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"
-        />
-        <input
-          v-model="search"
-          type="text"
-          placeholder="Search by name, email, phone..."
-          class="w-full pl-8 pr-3 py-3 bg-[#f5f5f5] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
-        />
-      </div>
-      <select
-        v-model="callerTypeFilter"
-        class="border border-gray-200 rounded-lg px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
-      >
-        <option value="">All types</option>
-        <option value="new_client">New client</option>
-        <option value="existing_client">Existing client</option>
-        <option value="opposing_party">Opposing party</option>
-      </select>
-      <select
-        v-model="urgentFilter"
-        class="border border-gray-200 rounded-lg px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
-      >
-        <option value="">All calls</option>
-        <option value="true">Urgent only</option>
-      </select>
-    </div>
+    <CallFilters
+      v-model:search="search"
+      v-model:callerTypeFilter="callerTypeFilter"
+      v-model:urgentFilter="urgentFilter"
+    />
 
     <!-- Cards -->
     <div class="flex flex-col gap-4">
@@ -101,6 +79,7 @@ watch([search, urgentFilter, callerTypeFilter], () => {
             load();
           "
           :disabled="page === 1"
+          :class="{'cursor-pointer': page !== 1}"
           class="px-3 py-1 text-xs border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50"
         >
           Previous
@@ -111,6 +90,7 @@ watch([search, urgentFilter, callerTypeFilter], () => {
             load();
           "
           :disabled="page * 20 >= count"
+          :class="{'cursor-pointer': !(page * 20 >= count)}"
           class="px-3 py-1 text-xs border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50"
         >
           Next

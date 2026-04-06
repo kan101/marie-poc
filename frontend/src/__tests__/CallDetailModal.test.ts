@@ -55,15 +55,6 @@ describe('CallDetailModal', () => {
     expect(wrapper.text()).toContain('Johanna Schmidt')
   })
 
-  it('renders summary after loading', async () => {
-    const wrapper = mount(CallDetailModal, {
-      props: { callId: 1 },
-      attachTo: document.body,
-    })
-    await flushPromises()
-    expect(wrapper.text()).toContain('Caller inquired about a family law matter.')
-  })
-
   it('renders transcript after loading', async () => {
     const wrapper = mount(CallDetailModal, {
       props: { callId: 1 },

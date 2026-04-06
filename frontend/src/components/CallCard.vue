@@ -11,6 +11,7 @@ const emit = defineEmits<{
   select: [id: number];
 }>();
 
+// Left border color indicates caller type; urgent overrides all other types
 function borderClass(): string {
   if (props.call.urgent) return "border-l-[3px] border-l-orange-500";
   if (props.call.caller_type === "new_client")
@@ -22,6 +23,10 @@ function borderClass(): string {
   return "border-l-[3px] border-l-slate-300";
 }
 
+/**
+ * Maps caller_type string to badge display props
+ * Using a lookup object avoids a chain of if/else statements 
+ */
 function callerTypeBadge(type: string): {
   icon: string;
   text: string;
@@ -66,6 +71,7 @@ function initials(name: string): string {
     .slice(0, 2);
 }
 
+// Avatar background matches the caller type color scheme
 function avatarBg(): string {
   if (props.call.urgent) return "bg-orange-200 text-orange-800";
   if (props.call.caller_type === "new_client")
@@ -102,7 +108,7 @@ function formatAppointment(iso: string): string {
     ]"
   >
     <!-- Header -->
-    <div :class="['px-5 pt-5 pb-4']">
+    <div :class="['px-5 pt-5 pb-4 bg-slate-50']">
       <div class="flex items-start gap-3">
         <!-- Avatar -->
         <div
@@ -127,7 +133,7 @@ function formatAppointment(iso: string): string {
             />
           </div>
 
-          <div class="flex items-center gap-4 text-xs text-gray-500 flex-wrap">
+          <div class="flex items-center gap-4 mt-2 text-xs text-gray-500 flex-wrap">
             <span class="flex items-center gap-1.5">
               <font-awesome-icon
                 icon="phone"
@@ -175,8 +181,8 @@ function formatAppointment(iso: string): string {
         />
         <Badge
           v-if="call.follow_up_sent"
-          icon="envelope"
-          text="Email sent"
+          icon="paper-plane"
+          text="Email Sent"
           variant="blue"
         />
         <Badge
@@ -237,14 +243,6 @@ function formatAppointment(iso: string): string {
       <div
         class="flex items-center justify-between gap-2 p-2 mr-2 sm:justify-end"
       >
-        <!-- <span
-          v-if="call.proposed_appointment"
-          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700 ring-1 ring-blue-200"
-        >
-          <font-awesome-icon icon="calendar" class="text-sm" />
-          <span class="mr-2">Proposed Appointment:</span>
-          {{ formatAppointment(call.proposed_appointment) }}
-        </span> -->
       </div>
     </div>
   </div>

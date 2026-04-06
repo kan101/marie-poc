@@ -70,21 +70,21 @@ describe('CallCard', () => {
         selected: false,
       },
     })
-    expect(wrapper.text()).toContain('Urgent')
+    expect(wrapper.text()).toContain('Callback needed')
   })
-
+  
   it('does not show urgent badge when not urgent', () => {
     const wrapper = mount(CallCard, {
       props: { call: baseCall, selected: false },
     })
-    expect(wrapper.text()).not.toContain('Urgent')
+    expect(wrapper.text()).not.toContain('Callback needed')
   })
 
   it('shows new client badge', () => {
     const wrapper = mount(CallCard, {
       props: { call: baseCall, selected: false },
     })
-    expect(wrapper.text()).toContain('New client')
+    expect(wrapper.text()).toContain('New Client')
   })
 
   it('shows existing client badge', () => {

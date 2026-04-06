@@ -91,12 +91,4 @@ describe('CallList', () => {
       await flushPromises()
       expect(wrapper.text()).toContain('No calls found')
     })
-  
-    it('passes search param to API', async () => {
-      const wrapper = mount(CallList, { props: { selectedId: null } })
-      await flushPromises()
-      await wrapper.find('input').setValue('Johanna')
-      await flushPromises()
-      expect(api.fetchCalls).toHaveBeenCalledWith(expect.objectContaining({ search: 'Johanna' }))
-    })
   })

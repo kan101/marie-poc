@@ -131,7 +131,7 @@ function initials(name: string): string {
             </div>
             <button
               @click="emit('close')"
-              class="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-lg hover:bg-gray-100 flex-shrink-0"
+              class="text-gray-400 cursor-pointer hover:text-gray-600 transition-colors p-1.5 rounded-lg hover:bg-gray-100 flex-shrink-0"
             >
               <font-awesome-icon icon="xmark" />
             </button>
@@ -153,12 +153,6 @@ function initials(name: string): string {
             <div>
               <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Recording</p>
               <audio :src="`/media/${call.audio_file}`" controls class="w-full" />
-            </div>
-
-            <!-- Summary -->
-            <div v-if="call.summary">
-              <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Summary</p>
-              <p class="text-sm text-gray-700 leading-relaxed bg-gray-50 rounded-xl p-4">{{ call.summary }}</p>
             </div>
 
             <!-- Transcript -->

@@ -16,7 +16,8 @@ import {
   faUser,
   faUserCheck,
   faUserSlash,
-  faWandMagicSparkles
+  faWandMagicSparkles,
+  faPaperPlane
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -32,7 +33,8 @@ library.add(
   faUser,
   faUserCheck,
   faUserSlash,
-  faWandMagicSparkles
+  faWandMagicSparkles,
+  faPaperPlane
 );
 
 const app = createApp(App);
