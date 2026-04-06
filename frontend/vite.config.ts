@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
 
@@ -10,5 +10,9 @@ export default defineConfig({
       '/api': 'http://localhost:8000',
       '/media': 'http://localhost:8000',
     }
+  },
+  test: {
+    environment: 'happy-dom',
+    globals: true,
   }
 })

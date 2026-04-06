@@ -20,9 +20,10 @@ export interface CallSummary {
   summary: string;
   audio_file: string;
   urgent: boolean;
-  urgent_reason: string,
+  urgent_reason: string;
   follow_up_sent: boolean;
   requires_appointment: boolean;
+  proposed_appointment: string | null;
 }
 
 export interface CallDetail extends CallSummary {
@@ -33,11 +34,11 @@ export interface CallDetail extends CallSummary {
 }
 
 export interface Stats {
-  total_calls: number
-  urgent: number
-  email_sent: number
-  no_action: number
-  avg_duration_seconds: number
+  total_calls: number;
+  urgent: number;
+  email_sent: number;
+  no_action: number;
+  avg_duration_seconds: number;
 }
 
 export interface PaginatedResponse<T> {
