@@ -14,6 +14,12 @@ marie-poc/
     ground_truth.json
 ```
 
+## Agents
+
+Whisper agent → transcription
+Extraction agent (GPT-4o-mini) → structured intake data  
+Action agent → routes to escalation or email dispatch
+
 ### Import pipeline
 
 ```
@@ -133,14 +139,14 @@ npm run test
 After every call, Marie analyses the transcript and takes the action a legal secretary would take:
 
 - **Urgent call** — flagged immediately in the dashboard with a callback badge. The lawyer sees it the moment they log in and knows to prioritise.
-- **Caller left an email** — a follow-up email is sent automatically with a proposed appointment slot (next business day at 10am Berlin time) and a reschedule link. Appointment time is displayed on the call card.
+- **Caller left an email** — a follow-up email is sent automatically with a proposed appointment slot (next business day) and a reschedule link. Appointment time is displayed on the call card.
 - **No email left** — logged only, no action taken.
 
 Every call ends with a clear next step. The lawyer opens the dashboard in the morning and the intake work is already done.
 
 ### Why it matters
 
-One of a the fundamental roles of a secretary is to take calls and schedule meetings. This is precisely what Marie does. 
+One of the fundamental roles of a secretary is to take calls and schedule meetings. This is precisely what Marie does. 
 
 The secretary analogy: a good secretary doesn't wait for the lawyer to read every message before deciding what to do next. They handle it — escalate the urgent ones, follow up on the rest. Marie does the same, automatically, for every call that comes in after hours.
 
@@ -153,13 +159,12 @@ The secretary analogy: a good secretary doesn't wait for the lawyer to read ever
 ### How to validate in production
 
 - **A/B test** — 50% of calls get automated follow-up, 50% get transcript only. Measure appointment booking rate and lead conversion over 30 days.
-- **Time-to-response metric** — track how long it takes a lawyer to act on a call with vs without the feature.
 - **Email engagement** — open rate and reschedule link click rate tells you whether callers are engaging with the follow-up.
 - **User interviews** — ask lawyers after 2 weeks whether they trust the automated emails or feel the need to review them first. This informs whether to add an approval step.
 
 ### Production next steps
 
-- Replace proposed slot with Calendly API (or similar)— book a real slot and send a genuine reschedule link
+- Replace proposed slot with Calendly API (or similar) — book a real slot and send a genuine reschedule link
 - Add SMS follow-up for callers who didn't leave an email but left a phone number
 - Let lawyers configure urgency rules per practice area (e.g. always escalate criminal matters)
 - Multi-lawyer firm support — route follow-ups to the right lawyer based on matter type
@@ -203,6 +208,7 @@ frontend/
       CallCard.vue        # individual call card with audio player
       CallFilters.vue     # search and filter toolbar
       CallDetailModal.vue # full call detail with transcript and notes
+      CallList.vue        # Paginated list of calls
       StatsBar.vue        # summary metrics
     views/
       Dashboard.vue       # main layout

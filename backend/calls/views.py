@@ -1,7 +1,6 @@
 from rest_framework import generics, filters
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.http import FileResponse, Http404
 from django.conf import settings
 from django.db.models import Avg
 import os
@@ -13,24 +12,36 @@ from .serializers import CallListSerializer, CallDetailSerializer, CallNotesSeri
 class CallListView(generics.ListAPIView):
     serializer_class = CallListSerializer
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    # Search across caller fields — DRF handles the JOIN via double underscore notation
     search_fields = ['caller__first_name', 'caller__last_name', 'caller__email', 'caller__phone_number']
     ordering_fields = ['called_at', 'duration_seconds']
-    ordering = ['-called_at']
+    ordering = ['-called_at']  # most recent calls first by default
 
     def get_queryset(self):
         queryset = Call.objects.select_related('caller').all()
+
+        # urgent filter — query param is a string, so we convert to boolean explicitly
+        urgent = self.request.query_params.get('urgent')
+        if urgent is not None:
+            queryset = queryset.filter(urgent=urgent.lower() == 'true')
+
+        caller_type = self.request.query_params.get('caller_type')
+        if caller_type:
+            queryset = queryset.filter(caller_type=caller_type)
+
         return queryset
 
 
 class CallDetailView(generics.RetrieveAPIView):
     serializer_class = CallDetailSerializer
+    # select_related here too — detail view renders nested caller data
     queryset = Call.objects.select_related('caller').all()
 
 
 class CallNotesView(generics.UpdateAPIView):
     serializer_class = CallNotesSerializer
     queryset = Call.objects.all()
-    http_method_names = ['patch']
+    http_method_names = ['patch']  # PATCH only — lawyers update notes, never replace the full call record
 
 
 class StatsView(APIView):
@@ -38,8 +49,10 @@ class StatsView(APIView):
         total = Call.objects.count()
         urgent = Call.objects.filter(urgent=True).count()
         email_sent = Call.objects.filter(follow_up_sent=True).count()
+        # no_action: neither urgent nor followed up — logged only
         no_action = Call.objects.filter(urgent=False, follow_up_sent=False).count()
 
+        # Avoid division by zero if no calls exist yet
         avg_duration = 0
         if total:
             avg_duration = Call.objects.aggregate(avg=Avg('duration_seconds'))['avg'] or 0

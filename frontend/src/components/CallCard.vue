@@ -188,7 +188,7 @@ function formatAppointment(iso: string): string {
         <Badge
           v-if="call.proposed_appointment"
           icon="calendar"
-          :text="'Appointment: ' + formatAppointment(call.proposed_appointment!)"
+          :text="'Appointment:  ' + formatAppointment(call.proposed_appointment!)"
           variant="blue"
         />
         <Badge
